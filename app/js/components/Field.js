@@ -43,6 +43,12 @@ export default class Field {
       }
     }
 
+    // add start and end nodes
+    this.startNode = this.nodes[Math.round(this.fieldHeight / 2)][Math.round(this.fieldWidth / 3)];
+    this.startNode.div.classList.add("node--start");
+    this.endNode = this.nodes[Math.round(this.fieldHeight / 2)][Math.round((this.fieldWidth / 3) * 2)];
+    this.endNode.div.classList.add("node--end");
+
     // big elements array
     this.nodes.push([]);
   }
