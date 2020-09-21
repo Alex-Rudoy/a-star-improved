@@ -1,3 +1,6 @@
 import "../scss/main.scss";
+import Field from "./components/Field";
 
-window.onload = () => {};
+let field = new Field();
+
+export default field;
