@@ -9,17 +9,18 @@ export default class Field {
     // mouse click handlers
     document.addEventListener("mousedown", (e) => (this.mouseDown = true));
     document.addEventListener("mouseup", (e) => {
-      this.mouseDown = false;
-      this.clickTarget = "";
-      this.startNode.div.classList.remove("node--wall");
+      this.mouseUpHandler();
     });
+    document.addEventListener("contextmenu", (e) => e.preventDefault());
   }
 
   setupMap() {
     // field size based on screen size
     this.field = document.querySelector(".field");
+    let header = document.querySelector("header");
     let main = document.querySelector("main");
 
+    main.style.height = `calc(100vh - ${header.clientHeight}px)`;
     this.fieldWidth = Math.floor(main.clientWidth / 25);
     this.fieldHeight = Math.floor(main.clientHeight / 25);
 
@@ -64,48 +65,68 @@ export default class Field {
 
   mouseDownHandler(e) {
     e.preventDefault();
-    if (e.target == this.startNode.div) {
+    let div = e.target;
+
+    if (div == this.startNode.div) {
       this.clickTarget = "start";
       return;
     }
-    if (e.target == this.endNode.div) {
+
+    if (div == this.endNode.div) {
       this.clickTarget = "end";
       return;
     }
-    if (e.target.classList.contains("node--wall")) {
+
+    if (e.which == 3 || div.classList.contains("node--wall")) {
       this.clickTarget = "removeWall";
+      this.nodes[div.dataset.y][div.dataset.x].removeWall();
     } else {
       this.clickTarget = "addWall";
+      this.nodes[div.dataset.y][div.dataset.x].makeWall();
     }
+  }
+
+  mouseUpHandler() {
+    this.mouseDown = false;
+    this.clickTarget = "";
+    this.startNode.removeWall();
+    this.endNode.removeWall();
   }
 
   mouseMoveHandler(e) {
     e.preventDefault();
     let div = e.target;
+
     if (this.clickTarget == "start") {
-      this.startNode.div.classList.remove("node--start");
-      div.classList.add("node--start");
-      this.startNode = this.nodes[div.dataset.y][div.dataset.x];
-      return;
+      this.moveStartNode(div);
     }
 
     if (this.clickTarget == "end") {
-      this.endNode.div.classList.remove("node--end");
-      div.classList.add("node--end");
-      this.endNode = this.nodes[div.dataset.y][div.dataset.x];
-      return;
+      this.moveEndNode(div);
     }
 
     if (
       this.clickTarget == "addWall" &&
       !div.classList.contains("node--start") &&
-      !div.classList.contains("node--start")
+      !div.classList.contains("node--end")
     ) {
-      div.classList.add("node--wall");
+      this.nodes[div.dataset.y][div.dataset.x].makeWall();
     }
 
     if (this.clickTarget == "removeWall") {
-      div.classList.remove("node--wall");
+      this.nodes[div.dataset.y][div.dataset.x].removeWall();
     }
+  }
+
+  moveStartNode(div) {
+    this.startNode.div.classList.remove("node--start");
+    div.classList.add("node--start");
+    this.startNode = this.nodes[div.dataset.y][div.dataset.x];
+  }
+
+  moveEndNode(div) {
+    this.endNode.div.classList.remove("node--end");
+    div.classList.add("node--end");
+    this.endNode = this.nodes[div.dataset.y][div.dataset.x];
   }
 }
