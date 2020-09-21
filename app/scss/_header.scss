@@ -1,5 +1,38 @@
 .header {
   width: 100vw;
-  height: 150px;
-  background-color: aliceblue;
+
+  &__controls {
+    background-color: #30475e;
+    height: 75px;
+    color: white;
+    padding: 16px;
+  }
+
+  &__legend {
+    &-item {
+      float: left;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 16px;
+    }
+
+    & p {
+      font-weight: bold;
+    }
+
+    & .node {
+      display: inline-block;
+      position: initial;
+      width: 25px;
+      height: 25px;
+      margin-right: 16px;
+    }
+
+    &::after {
+      content: "";
+      clear: both;
+      display: block;
+    }
+  }
 }

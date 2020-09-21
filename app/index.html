@@ -4,12 +4,43 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pathfinding visualizer</title>
-    <link rel="icon" type="image/png" href="./img/Polygon 1.png" />
+    <link rel="icon" type="image/png" href="./img/end.png" />
     <link href="https://fonts.googleapis.com/css2?family=Muli:wght@300;400;700&display=swap" rel="stylesheet" />
   </head>
   <body>
     <div class="wrapper">
-      <header class="header"></header>
+      <header class="header">
+        <div class="header__controls">
+          <h1>Pathfinding visualiser</h1>
+        </div>
+        <div class="header__legend">
+          <div class="header__legend-item">
+            <span class="node node--start"></span>
+            <p>Start node</p>
+          </div>
+          <div class="header__legend-item">
+            <span class="node node--end"></span>
+            <p>End node</p>
+          </div>
+          <div class="header__legend-item">
+            <span class="node node--wall"></span>
+            <p>Wall nodes</p>
+          </div>
+          <div class="header__legend-item">
+            <span class="node"></span>
+            <p>Unvisited nodes</p>
+          </div>
+          <div class="header__legend-item">
+            <span class="node node--open"></span>
+            <span class="node node--closed"></span>
+            <p>Visited nodes</p>
+          </div>
+          <div class="header__legend-item">
+            <span class="node node--path"></span>
+            <p>Path from start to end</p>
+          </div>
+        </div>
+      </header>
       <main>
         <section class="field"></section>
       </main>

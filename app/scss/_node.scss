@@ -1,42 +1,42 @@
 .node {
   position: absolute;
-  border: 0.5px solid #777;
+  border: 0.5px solid #c7d1db;
   background-color: #fff;
   float: left;
   font-size: 4px;
-  transition: 0.3s;
+  transition: background-color 0.3s, border 0.3s;
 
   &--wall {
     background-color: black;
     border: 0.5px solid black;
   }
   &--open {
-    background-color: lightcoral;
-    border: 0.5px solid lightcoral;
+    background-color: #e7dec8;
+    border: 0.5px solid #e7dec8;
     color: #fff;
   }
 
   &--closed {
-    background-color: red;
-    border: 0.5px solid red;
+    background-color: #cbaf87;
+    border: 0.5px solid #cbaf87;
     color: #fff;
   }
 
   &--start {
-    background-color: blue;
-    border: 0.5px solid blue;
+    background: url(../img/start.png) center no-repeat, #687c90;
+    border: 0.5px solid #687c90;
     color: #fff;
   }
 
   &--end {
-    background-color: purple;
-    border: 0.5px solid purple;
+    background: url(../img/end.png) center no-repeat, #687c90;
+    border: 0.5px solid #687c90;
     color: #fff;
   }
 
   &--path {
-    background-color: green;
-    border: 0.5px solid green;
+    background-color: #b58066;
+    border: 0.5px solid #b58066;
     color: #fff;
   }
 }
