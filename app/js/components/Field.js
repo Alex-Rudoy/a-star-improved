@@ -2,10 +2,17 @@ import Vertice from "./Vertice";
 
 export default class Field {
   constructor() {
-    this.field = document.querySelector(".field");
     this.nodes = [];
 
     this.setupMap();
+
+    // mouse click handlers
+    document.addEventListener("mousedown", (e) => (this.mouseDown = true));
+    document.addEventListener("mouseup", (e) => {
+      this.mouseDown = false;
+      this.clickTarget = "";
+      this.startNode.div.classList.remove("node--wall");
+    });
   }
 
   setupMap() {
@@ -27,6 +34,8 @@ export default class Field {
         this.nodes[y].push(new Vertice({ x: x, y: y }));
         this.nodes[y][x].addDiv();
         this.field.insertAdjacentElement("beforeend", this.nodes[y][x].div);
+        this.nodes[y][x].div.addEventListener("mousedown", (e) => this.mouseDownHandler(e));
+        this.nodes[y][x].div.addEventListener("mouseenter", (e) => this.mouseMoveHandler(e));
       }
     }
 
@@ -53,15 +62,50 @@ export default class Field {
     this.nodes.push([]);
   }
 
-  addNeighbour(a, b) {
-    a.neighbours.push(b);
+  mouseDownHandler(e) {
+    e.preventDefault();
+    if (e.target == this.startNode.div) {
+      this.clickTarget = "start";
+      return;
+    }
+    if (e.target == this.endNode.div) {
+      this.clickTarget = "end";
+      return;
+    }
+    if (e.target.classList.contains("node--wall")) {
+      this.clickTarget = "removeWall";
+    } else {
+      this.clickTarget = "addWall";
+    }
   }
 
-  removeNeighbour(a, b) {
-    a.neighbours = a.neighbours.filter((n) => n != b);
-  }
+  mouseMoveHandler(e) {
+    e.preventDefault();
+    let div = e.target;
+    if (this.clickTarget == "start") {
+      this.startNode.div.classList.remove("node--start");
+      div.classList.add("node--start");
+      this.startNode = this.nodes[div.dataset.y][div.dataset.x];
+      return;
+    }
 
-  clickHandler(e) {
-    e.target.classList.add("node--start");
+    if (this.clickTarget == "end") {
+      this.endNode.div.classList.remove("node--end");
+      div.classList.add("node--end");
+      this.endNode = this.nodes[div.dataset.y][div.dataset.x];
+      return;
+    }
+
+    if (
+      this.clickTarget == "addWall" &&
+      !div.classList.contains("node--start") &&
+      !div.classList.contains("node--start")
+    ) {
+      div.classList.add("node--wall");
+    }
+
+    if (this.clickTarget == "removeWall") {
+      div.classList.remove("node--wall");
+    }
   }
 }
