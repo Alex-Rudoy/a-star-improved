@@ -6,10 +6,7 @@ export default class Field {
     this.nodes = [];
 
     this.setupMap();
-    this.events();
   }
-
-  events() {}
 
   setupMap() {
     // add nodes
@@ -19,7 +16,8 @@ export default class Field {
       for (let column = 0; column < 50; column++) {
         this.nodes[row].push(new Vertice({ x: column, y: row }));
         this.nodes[row][column].addDiv();
-        this.nodes[row][column].div.addEventListener("mousemove", (e) => this.clickHandler(e));
+        this.field.insertAdjacentElement("beforeend", this.nodes[row][column].div);
+        this.nodes[row][column].div.addEventListener("mouseDown", (e) => this.clickHandler(e));
       }
     }
 
@@ -29,7 +27,7 @@ export default class Field {
         for (let i = -1; i <= 1; i++) {
           for (let j = -1; j <= 1; j++) {
             if (column + j >= 0 && row + i >= 0 && column + j < 50 && row + i < 50) {
-              this.nodes[row][column].neighbours.push(this.nodes[row + i][column + j]);
+              this.addNeighbour(this.nodes[row][column], this.nodes[row + i][column + j]);
             }
           }
         }
@@ -38,6 +36,14 @@ export default class Field {
 
     // big elements array
     this.nodes.push([]);
+  }
+
+  addNeighbour(a, b) {
+    a.neighbours.push(b);
+  }
+
+  removeNeighbour(a, b) {
+    a.neighbours = a.neighbours.filter((n) => n != b);
   }
 
   clickHandler(e) {

@@ -18,6 +18,4 @@ Vertice.prototype.addDiv = function () {
   this.div.style.left = this.x * 15 + "px";
   this.div.style.width = this.width * 15 + "px";
   this.div.style.height = this.height * 15 + "px";
-
-  field.insertAdjacentElement("beforeend", this.div);
 };
