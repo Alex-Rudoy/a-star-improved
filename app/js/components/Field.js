@@ -9,25 +9,34 @@ export default class Field {
   }
 
   setupMap() {
-    // add nodes
-    for (let row = 0; row < 50; row++) {
+    // field size based on screen size
+    this.field = document.querySelector(".field");
+    let main = document.querySelector("main");
+
+    this.fieldWidth = Math.floor(main.clientWidth / 25);
+    this.fieldHeight = Math.floor(main.clientHeight / 25);
+
+    this.field.style.width = this.fieldWidth * 25 + "px";
+    this.field.style.height = this.fieldHeight * 25 + "px";
+
+    // add nodes to field
+    for (let y = 0; y < this.fieldHeight; y++) {
       this.nodes.push([]);
 
-      for (let column = 0; column < 50; column++) {
-        this.nodes[row].push(new Vertice({ x: column, y: row }));
-        this.nodes[row][column].addDiv();
-        this.field.insertAdjacentElement("beforeend", this.nodes[row][column].div);
-        this.nodes[row][column].div.addEventListener("mouseDown", (e) => this.clickHandler(e));
+      for (let x = 0; x < this.fieldWidth; x++) {
+        this.nodes[y].push(new Vertice({ x: x, y: y }));
+        this.nodes[y][x].addDiv();
+        this.field.insertAdjacentElement("beforeend", this.nodes[y][x].div);
       }
     }
 
-    // add edges
-    for (let row = 0; row < 50; row++) {
-      for (let column = 0; column < 50; column++) {
+    // add neighbours
+    for (let y = 0; y < this.fieldHeight; y++) {
+      for (let x = 0; x < this.fieldWidth; x++) {
         for (let i = -1; i <= 1; i++) {
           for (let j = -1; j <= 1; j++) {
-            if (column + j >= 0 && row + i >= 0 && column + j < 50 && row + i < 50) {
-              this.addNeighbour(this.nodes[row][column], this.nodes[row + i][column + j]);
+            if (x + j >= 0 && y + i >= 0 && x + j < this.fieldWidth && y + i < this.fieldHeight) {
+              this.nodes[y][x].addNeighbour(this.nodes[y + i][x + j]);
             }
           }
         }
