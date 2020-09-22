@@ -11,7 +11,17 @@
     <div class="wrapper">
       <header class="header">
         <div class="header__controls">
-          <h1>Pathfinding visualiser</h1>
+          <div class="header__controls-item">
+            <h1>Pathfinding visualiser</h1>
+          </div>
+          <div class="header__controls-item">
+            <p>Mode</p>
+            <div class="arrow"></div>
+            <div class="header__dropdown">
+              <p class="button" data-action="changeMode" data-mode="walls">Draw / Delete walls</p>
+              <p class="button" data-action="changeMode" data-mode="join">Join / split nodes</p>
+            </div>
+          </div>
         </div>
         <div class="header__legend">
           <div class="header__legend-item">

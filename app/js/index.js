@@ -1,6 +1,4 @@
 import "../scss/main.scss";
-import Field from "./components/Field";
+import State from "./components/State";
 
-let field = new Field();
-
-export default field;
+let state = new State();
