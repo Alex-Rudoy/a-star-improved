@@ -1,4 +1,4 @@
-import Vertice from "./Vertice";
+import Node from "./Node";
 
 export default class Field {
   constructor() {
@@ -32,7 +32,7 @@ export default class Field {
       this.nodes.push([]);
 
       for (let x = 0; x < this.fieldWidth; x++) {
-        this.nodes[y].push(new Vertice({ x: x, y: y }));
+        this.nodes[y].push(new Node({ x: x, y: y }));
         this.nodes[y][x].addDiv();
         this.field.insertAdjacentElement("beforeend", this.nodes[y][x].div);
         this.nodes[y][x].div.addEventListener("mousedown", (e) => this.mouseDownHandler(e));

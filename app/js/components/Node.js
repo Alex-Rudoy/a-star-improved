@@ -1,11 +1,13 @@
-export default class Vertice {
+export default class Node {
   constructor(args) {
+    //positiom on grid
     this.x = args.x;
     this.y = args.y;
 
     this.width = args.width || 1;
     this.height = args.height || 1;
 
+    // position of center of node for distance calculations
     this.xCoord = this.x + this.width / 2;
     this.yCoord = this.y + this.height / 2;
 
@@ -16,7 +18,7 @@ export default class Vertice {
   }
 }
 
-Vertice.prototype.addDiv = function () {
+Node.prototype.addDiv = function () {
   this.div = document.createElement("div");
 
   this.div.classList.add("node");
@@ -29,20 +31,20 @@ Vertice.prototype.addDiv = function () {
   this.div.dataset.y = this.y;
 };
 
-Vertice.prototype.addNeighbour = function (a) {
+Node.prototype.addNeighbour = function (a) {
   a.neighbours.push(a);
 };
 
-Vertice.prototype.removeNeighbour = function (a) {
+Node.prototype.removeNeighbour = function (a) {
   this.neighbours = this.neighbours.filter((n) => n != a);
 };
 
-Vertice.prototype.makeWall = function () {
+Node.prototype.makeWall = function () {
   this.state = "wall";
   this.div.classList.add("node--wall");
 };
 
-Vertice.prototype.removeWall = function () {
+Node.prototype.removeWall = function () {
   this.state = "empty";
   this.div.classList.remove("node--wall");
 };
