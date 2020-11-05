@@ -10,9 +10,10 @@ export default class State {
 
   buttonClickHandler(e) {
     let button = e.target;
+    let p = button.parentNode.parentNode.children[0];
     if (button.dataset.action == "changeMode") {
       this.mode = button.dataset.mode;
-      console.log(this.mode);
+      p.innerHTML = button.innerHTML;
     }
   }
 }
