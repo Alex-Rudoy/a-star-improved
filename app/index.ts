@@ -1,4 +1,4 @@
 import "../scss/main.scss";
-import State from "./components/State";
+import State from "./ts/State";
 
 let state = new State();

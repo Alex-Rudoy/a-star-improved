@@ -1,8 +1,24 @@
 import Node from "./Node";
 
+type ClickTargets = "addWall" | "removeWall" | "start" | "end";
+
 export default class Field {
+  nodes: Node[][];
+  fieldWidth: number;
+  fieldHeight: number;
+  mouseDown: boolean;
+  startNode: Node;
+  endNode: Node;
+  clickTarget: ClickTargets;
+
   constructor() {
     this.nodes = [];
+    this.fieldWidth = 0;
+    this.fieldHeight = 0;
+    this.mouseDown = false;
+    this.startNode = new Node({ x: 0, y: 0 });
+    this.endNode = new Node({ x: 0, y: 0 });
+    this.clickTarget = "addWall";
 
     this.setupMap();
 
@@ -16,16 +32,16 @@ export default class Field {
 
   setupMap() {
     // field size based on screen size
-    this.field = document.querySelector(".field");
-    let header = document.querySelector("header");
-    let main = document.querySelector("main");
+    let field = <HTMLElement>document.querySelector(".field")!;
+    let header = document.querySelector("header")!;
+    let main = document.querySelector("main")!;
 
     main.style.height = `calc(100vh - ${header.clientHeight}px)`;
     this.fieldWidth = Math.floor(main.clientWidth / 25);
     this.fieldHeight = Math.floor(main.clientHeight / 25);
 
-    this.field.style.width = this.fieldWidth * 25 + "px";
-    this.field.style.height = this.fieldHeight * 25 + "px";
+    field.style.width = this.fieldWidth * 25 + "px";
+    field.style.height = this.fieldHeight * 25 + "px";
 
     // add nodes to field
     for (let y = 0; y < this.fieldHeight; y++) {
@@ -34,7 +50,7 @@ export default class Field {
       for (let x = 0; x < this.fieldWidth; x++) {
         this.nodes[y].push(new Node({ x: x, y: y }));
         this.nodes[y][x].addDiv();
-        this.field.insertAdjacentElement("beforeend", this.nodes[y][x].div);
+        field.insertAdjacentElement("beforeend", this.nodes[y][x].div);
         this.nodes[y][x].div.addEventListener("mousedown", (e) => this.mouseDownHandler(e));
         this.nodes[y][x].div.addEventListener("mouseenter", (e) => this.mouseMoveHandler(e));
       }
@@ -77,6 +93,7 @@ export default class Field {
       return;
     }
 
+    // e.which is right mouse button
     if (e.which == 3 || div.classList.contains("node--wall")) {
       this.clickTarget = "removeWall";
       this.nodes[div.dataset.y][div.dataset.x].removeWall();
@@ -89,8 +106,6 @@ export default class Field {
   mouseUpHandler() {
     this.mouseDown = false;
     this.clickTarget = "";
-    this.startNode.removeWall();
-    this.endNode.removeWall();
   }
 
   mouseMoveHandler(e) {
@@ -119,7 +134,8 @@ export default class Field {
   }
 
   moveStartNode(div) {
-    this.startNode.div.classList.remove("node--start");
+    this.startNode.makeEmpty();
+    this.nodes[div.dataset.y][div.dataset.x].makeStart();
     div.classList.add("node--start");
     this.startNode = this.nodes[div.dataset.y][div.dataset.x];
   }

@@ -44,7 +44,17 @@ Node.prototype.makeWall = function () {
   this.div.classList.add("node--wall");
 };
 
-Node.prototype.removeWall = function () {
+Node.prototype.makeEmpty = function () {
   this.state = "empty";
-  this.div.classList.remove("node--wall");
+  this.div.classList.remove("node--wall", "node--start", "node--end", "node--open", "node--closed");
+};
+
+Node.prototype.makeStart = function () {
+  this.state = "start";
+  this.div.classList.add("node--start");
+};
+
+Node.prototype.makeEnd = function () {
+  this.state = "end";
+  this.div.classList.add("node--end");
 };

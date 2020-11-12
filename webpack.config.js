@@ -2,7 +2,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin"); // Require  html-webpa
 const copyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
-  entry: __dirname + "/app/js/index.js", // webpack entry point. Module to start building dependency graph
+  entry: __dirname + "/app/index.ts", // webpack entry point. Module to start building dependency graph
   output: {
     path: __dirname + "/dist", // Folder to store generated bundle
     filename: "bundle.js", // Name of generated bundle after build
@@ -12,14 +12,9 @@ module.exports = {
     // where we defined file patterns and their loaders
     rules: [
       {
-        test: /\.js$/,
+        test: /\.tsx?$/,
         exclude: [/node_modules/],
-        use: {
-          loader: "babel-loader", // js polifill & transpiler
-          options: {
-            presets: ["@babel/preset-env"],
-          },
-        },
+        use: "ts-loader",
       },
       {
         test: /\.(sass|scss)$/,
