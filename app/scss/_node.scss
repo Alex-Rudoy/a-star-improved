@@ -6,10 +6,43 @@
   font-size: 4px;
   transition: background-color 0.3s, border-color 0.3s;
 
+  &--swamp::after {
+    content: "";
+    display: block;
+    opacity: 0.4;
+    width: 25px;
+    height: 25px;
+    background-color: #788b65;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    border: 0.5px solid #788b65;
+    position: relative;
+    top: -1px;
+    left: -1px;
+  }
+
+  &--swamp0::after {
+    background-image: url(../img/fern1.svg);
+  }
+
+  &--swamp1::after {
+    background-image: url(../img/fern2.svg);
+  }
+
+  &--swamp2::after {
+    background-image: url(../img/fern3.svg);
+  }
+
+  &--swamp3::after {
+    background-image: url(../img/fern4.svg);
+  }
+
   &--wall {
     background-color: black;
     border: 0.5px solid black;
   }
+
   &--open {
     background-color: #e7dec8;
     border: 0.5px solid #e7dec8;

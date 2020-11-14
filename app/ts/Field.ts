@@ -78,7 +78,7 @@ export default class Field {
     this.nodes.forEach((row) =>
       row.forEach((node) => {
         if (node.state === "closed" || node.state === "open" || node.state === "path") {
-          node.makeEmpty();
+          node.softReset();
         }
       })
     );
@@ -129,5 +129,37 @@ export default class Field {
   closeNode(nodeToClose: Node) {
     this.openNodes = this.openNodes.filter((node) => node !== nodeToClose);
     nodeToClose.makeClosed();
+  }
+
+  createSwamp(y: number, x: number) {
+    for (let i = -2; i <= 2; i++) {
+      for (let j = -2; j <= 2; j++) {
+        if (
+          x + j >= 0 &&
+          y + i >= 0 &&
+          x + j < this.fieldWidth &&
+          y + i < this.fieldHeight &&
+          Math.abs(j) + Math.abs(i) !== 4
+        ) {
+          this.nodes[y + i][x + j].makeSwamp();
+        }
+      }
+    }
+  }
+
+  removeSwamp(y: number, x: number) {
+    for (let i = -2; i <= 2; i++) {
+      for (let j = -2; j <= 2; j++) {
+        if (
+          x + j >= 0 &&
+          y + i >= 0 &&
+          x + j < this.fieldWidth &&
+          y + i < this.fieldHeight &&
+          Math.abs(j) + Math.abs(i) !== 4
+        ) {
+          this.nodes[y + i][x + j].removeSwamp();
+        }
+      }
+    }
   }
 }

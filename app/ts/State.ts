@@ -3,9 +3,9 @@ import Node from "./Node";
 import aStarStep from "./pathfindingAlgorithms/aStar";
 import dijkstraStep from "./pathfindingAlgorithms/dijkstra";
 
-type ObstacleMode = "wall" | "swamp";
+type ObstacleMode = "wall" | "swamp" | "join";
 type PathfindingalgorithmName = "aStar" | "dijkstra";
-type ClickTargets = "" | "makeWall" | "removeWall" | "start" | "end";
+type ClickTargets = "" | "makeWall" | "removeWall" | "makeSwamp" | "removeSwamp" | "start" | "end";
 
 export default class State {
   field: Field;
@@ -69,12 +69,24 @@ export default class State {
       }
 
       // e.which is right mouse button
-      if (e.which == 3 || div.classList.contains("node--wall")) {
-        this.clickTarget = "removeWall";
-        this.field.nodes[+div.dataset.y!][+div.dataset.x!].makeEmpty();
-      } else {
-        this.clickTarget = "makeWall";
-        this.field.nodes[+div.dataset.y!][+div.dataset.x!].makeWall();
+      if (this.obstacleMode === "wall") {
+        if (e.which == 3 || div.classList.contains("node--wall")) {
+          this.clickTarget = "removeWall";
+          this.field.nodes[+div.dataset.y!][+div.dataset.x!].removeWall();
+        } else {
+          this.clickTarget = "makeWall";
+          this.field.nodes[+div.dataset.y!][+div.dataset.x!].makeWall();
+        }
+      }
+
+      if (this.obstacleMode === "swamp") {
+        if (e.which == 3 || div.classList.contains("node--swamp")) {
+          this.clickTarget = "removeSwamp";
+          this.field.removeSwamp(+div.dataset.y!, +div.dataset.x!);
+        } else {
+          this.clickTarget = "makeSwamp";
+          this.field.createSwamp(+div.dataset.y!, +div.dataset.x!);
+        }
       }
     }
   }
@@ -126,6 +138,13 @@ export default class State {
           this.field.nodes[+div.dataset.y!][+div.dataset.x!].removeWall();
           break;
 
+        case "makeSwamp":
+          this.field.createSwamp(+div.dataset.y!, +div.dataset.x!);
+          break;
+
+        case "removeSwamp":
+          this.field.removeSwamp(+div.dataset.y!, +div.dataset.x!);
+          break;
         default:
           break;
       }

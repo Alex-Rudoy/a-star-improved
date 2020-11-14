@@ -15,6 +15,8 @@ export default class Node {
   index: number;
 
   state: NodeState;
+  isSwamp: boolean;
+
   neighbours: Node[];
   parent: Node | null;
 
@@ -38,6 +40,8 @@ export default class Node {
     this.index = 0;
 
     this.state = "empty";
+    this.isSwamp = false;
+
     this.neighbours = [];
     this.parent = null;
 
@@ -76,9 +80,40 @@ export default class Node {
     }
   }
 
+  makeSwamp() {
+    let n = Math.floor(Math.random() * 20);
+    if (n < 4 && this.state === "empty" && !this.isSwamp) {
+      this.div.classList.add(`node--swamp${n}`);
+    }
+    this.div.classList.add("node--swamp");
+    this.isSwamp = true;
+  }
+
+  removeSwamp() {
+    this.isSwamp = false;
+    this.div.classList.remove("node--swamp");
+  }
+
+  softReset() {
+    this.state = "empty";
+    this.div.classList.remove("node--open", "node--closed", "node--path");
+  }
+
   makeEmpty() {
     this.state = "empty";
-    this.div.classList.remove("node--wall", "node--start", "node--end", "node--open", "node--closed", "node--path");
+    this.div.classList.remove(
+      "node--wall",
+      "node--start",
+      "node--end",
+      "node--open",
+      "node--closed",
+      "node--path",
+      "node--swamp",
+      "node--swamp0",
+      "node--swamp1",
+      "node--swamp2",
+      "node--swamp3"
+    );
   }
 
   makeOpen(parent: Node, fromStart: number) {

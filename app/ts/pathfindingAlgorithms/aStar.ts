@@ -66,7 +66,7 @@ function aStarOpenNeighbours(field: Field, currentNode: Node): void {
     const newFromStart =
       currentNode.fromStart +
       Math.sqrt((currentNode.x - neighbourNode.x) ** 2 + (currentNode.y - neighbourNode.y) ** 2) *
-        (1 + 1 * +(neighbourNode.state === "swamp"));
+        (1 + 1 * +neighbourNode.isSwamp);
     if (
       neighbourNode.state !== "closed" &&
       neighbourNode.state !== "wall" &&
