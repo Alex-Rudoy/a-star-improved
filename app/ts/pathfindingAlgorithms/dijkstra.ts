@@ -1,8 +1,8 @@
 import Field from "../Field";
 import Node from "../Node";
 
-export default function aStarStep(field: Field, callback: () => void, quickRedraw: boolean): void {
-  const currentNode = aStarChooseNextNode(field);
+export default function dijkstraStep(field: Field, callback: () => void, pathFound: boolean): void {
+  const currentNode = dijkstraChooseNextNode(field);
 
   // if there are no way to get to end, stop
   if (!currentNode) {
@@ -20,19 +20,18 @@ export default function aStarStep(field: Field, callback: () => void, quickRedra
   // set the current node to closed and remove it from openNodes
   field.closeNode(currentNode);
 
-  aStarOpenNeighbours(field, currentNode);
+  dijkstraOpenNeighbours(field, currentNode);
 
   // if this is redraw on move
-  if (quickRedraw) {
-    aStarStep(field, callback, quickRedraw);
+  if (pathFound) {
+    dijkstraStep(field, callback, pathFound);
   }
 }
 
-function aStarChooseNextNode(field: Field): Node | null {
+function dijkstraChooseNextNode(field: Field): Node | null {
+  // make array of open nodes with smallest index
   let minIndex = Infinity;
-  let minToEnd = Infinity;
   let foundMinIndexNodes: Node[] = [];
-  let currentNode: Node = new Node({ x: 0, y: 0 });
 
   field.openNodes.forEach((node) => {
     if (node.index <= minIndex) {
@@ -50,18 +49,10 @@ function aStarChooseNextNode(field: Field): Node | null {
     return null;
   }
 
-  // find node with smallest distance to the end in that array
-  foundMinIndexNodes.forEach((node) => {
-    if (node.toEnd < minToEnd) {
-      minToEnd = node.toEnd;
-      currentNode = node;
-    }
-  });
-
-  return currentNode;
+  return foundMinIndexNodes[0];
 }
 
-function aStarOpenNeighbours(field: Field, currentNode: Node): void {
+function dijkstraOpenNeighbours(field: Field, currentNode: Node): void {
   currentNode.neighbours.forEach((neighbourNode) => {
     const newFromStart =
       currentNode.fromStart +
@@ -73,10 +64,7 @@ function aStarOpenNeighbours(field: Field, currentNode: Node): void {
       (neighbourNode.state !== "open" || neighbourNode.fromStart > newFromStart)
     ) {
       field.openNode(neighbourNode, currentNode, newFromStart);
-      neighbourNode.toEnd = Math.sqrt(
-        (field.endNode.x - neighbourNode.x) ** 2 + (field.endNode.y - neighbourNode.y) ** 2
-      );
-      neighbourNode.index = neighbourNode.fromStart + neighbourNode.toEnd;
+      neighbourNode.index = neighbourNode.fromStart;
     }
   });
 }

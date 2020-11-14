@@ -1,26 +1,22 @@
 import Field from "./Field";
 import Node from "./Node";
 import aStarStep from "./pathfindingAlgorithms/aStar";
-import dykstraStep from "./pathfindingAlgorithms/dykstra";
+import dijkstraStep from "./pathfindingAlgorithms/dijkstra";
 
 type ObstacleMode = "wall" | "swamp";
-type PathfindingalgorithmName = "aStar" | "dykstra";
+type PathfindingalgorithmName = "aStar" | "dijkstra";
 type ClickTargets = "" | "makeWall" | "removeWall" | "start" | "end";
 
 export default class State {
   field: Field;
 
   algorithmInProgress: boolean = false;
-  pathFound: boolean = false;
+  searchFinished: boolean = false;
 
   obstacleMode: ObstacleMode = "wall";
   pathfindingalgorithm: PathfindingalgorithmName = "aStar";
   pathfindingalgorithms: {
-    [name in PathfindingalgorithmName]: (
-      field: Field,
-      callback: (pathFound: boolean) => void,
-      pathFound: boolean
-    ) => void;
+    [name in PathfindingalgorithmName]: (field: Field, callback: () => void, searchFinished: boolean) => void;
   };
 
   buttons: NodeListOf<Element>;
@@ -33,7 +29,7 @@ export default class State {
   constructor() {
     this.field = new Field();
 
-    this.pathfindingalgorithms = { aStar: aStarStep, dykstra: dykstraStep };
+    this.pathfindingalgorithms = { aStar: aStarStep, dijkstra: dijkstraStep };
 
     this.buttons = document.querySelectorAll(".button");
     this.buttons.forEach((button) => button.addEventListener("click", (e) => this.buttonClickHandler(e)));
@@ -96,19 +92,27 @@ export default class State {
       switch (this.clickTarget) {
         case "start":
           this.field.moveStartNode(div);
-          if (this.pathFound) {
+          if (this.searchFinished) {
             this.field.softResetMap();
             this.field.openNode(this.field.startNode, new Node({ x: 0, y: 0 }), 0);
-            this.pathfindingalgorithms[this.pathfindingalgorithm](this.field, this.pathFindingCallback, this.pathFound);
+            this.pathfindingalgorithms[this.pathfindingalgorithm](
+              this.field,
+              this.pathFindingCallback,
+              this.searchFinished
+            );
           }
           break;
 
         case "end":
           this.field.moveEndNode(div);
-          if (this.pathFound) {
+          if (this.searchFinished) {
             this.field.softResetMap();
             this.field.openNode(this.field.startNode, new Node({ x: 0, y: 0 }), 0);
-            this.pathfindingalgorithms[this.pathfindingalgorithm](this.field, this.pathFindingCallback, this.pathFound);
+            this.pathfindingalgorithms[this.pathfindingalgorithm](
+              this.field,
+              this.pathFindingCallback,
+              this.searchFinished
+            );
           }
           break;
 
@@ -149,7 +153,7 @@ export default class State {
         this.field.openNode(this.field.startNode, new Node({ x: 0, y: 0 }), 0);
         this.interval = setInterval(
           () => this.pathfindingalgorithms[this.pathfindingalgorithm](this.field, this.pathFindingCallback, false),
-          16
+          4
         );
         break;
       case "pausePathfinding":
@@ -162,7 +166,7 @@ export default class State {
         document.querySelector("#pause")?.classList.remove("hidden");
         this.interval = setInterval(
           () => this.pathfindingalgorithms[this.pathfindingalgorithm](this.field, this.pathFindingCallback, false),
-          16
+          4
         );
         break;
       case "stopPathfinding":
@@ -180,11 +184,11 @@ export default class State {
     }
   }
 
-  pathFindingCallback(pathFound: boolean): void {
+  pathFindingCallback(): void {
     document.querySelector("#pause")?.classList.add("hidden");
     document.querySelector("#play")?.classList.add("hidden");
     clearInterval(this.interval);
     this.algorithmInProgress = false;
-    this.pathFound = pathFound;
+    this.searchFinished = true;
   }
 }
