@@ -4,6 +4,7 @@ type ClickTargets = "" | "makeWall" | "makeEmpty" | "start" | "end";
 
 export default class Field {
   nodes: Node[][];
+  openNodes: Node[];
   startNode: Node;
   endNode: Node;
 
@@ -15,6 +16,7 @@ export default class Field {
 
   constructor() {
     this.nodes = [];
+    this.openNodes = [];
     this.startNode = new Node({ x: 0, y: 0 });
     this.endNode = new Node({ x: 0, y: 0 });
 
@@ -148,5 +150,12 @@ export default class Field {
     this.endNode.div.classList.remove("node--end");
     div.classList.add("node--end");
     this.endNode = this.nodes[+div.dataset.y!][+div.dataset.x!];
+  }
+
+  drawPath(node: Node) {
+    if (node !== this.startNode && node.parent) {
+      node.parent.makePath();
+      this.drawPath(node.parent);
+    }
   }
 }

@@ -8,6 +8,9 @@ module.exports = {
     filename: "bundle.js", // Name of generated bundle after build
     publicPath: "/", // public URL of the output directory when referenced in a browser
   },
+  resolve: {
+    extensions: [".js", ".ts"],
+  },
   module: {
     // where we defined file patterns and their loaders
     rules: [
