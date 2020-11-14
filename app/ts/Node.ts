@@ -32,10 +32,10 @@ export default class Node {
     this.xCoord = this.x + this.width / 2;
     this.yCoord = this.y + this.height / 2;
 
-    // distances for algorhitms
-    this.fromStart = Infinity;
-    this.toEnd = Infinity;
-    this.index = Infinity;
+    // distances for algorithms
+    this.fromStart = 0;
+    this.toEnd = 0;
+    this.index = 0;
 
     this.state = "empty";
     this.neighbours = [];
@@ -46,7 +46,6 @@ export default class Node {
   }
 
   addDiv() {
-    console.log("ololo");
     this.div.classList.add("node");
     this.div.style.top = this.y * 25 + "px";
     this.div.style.left = this.x * 25 + "px";
@@ -58,7 +57,7 @@ export default class Node {
   }
 
   addNeighbour(a: Node) {
-    a.neighbours.push(a);
+    this.neighbours.push(a);
   }
 
   removeNeighbour(a: Node) {
@@ -70,13 +69,21 @@ export default class Node {
     this.div.classList.add("node--wall");
   }
 
+  removeWall() {
+    if (this.state === "wall") {
+      this.state = "empty";
+      this.div.classList.remove("node--wall");
+    }
+  }
+
   makeEmpty() {
     this.state = "empty";
     this.div.classList.remove("node--wall", "node--start", "node--end", "node--open", "node--closed", "node--path");
   }
 
-  makeOpen(fromStart: number) {
+  makeOpen(parent: Node, fromStart: number) {
     this.state = "open";
+    this.parent = parent;
     this.fromStart = fromStart;
     this.div.classList.add("node--open");
   }

@@ -1,7 +1,7 @@
 import Field from "../Field";
 import Node from "../Node";
 
-export default function aStarStep(field: Field): void {
+export default function aStarStep(field: Field, callback: (pathFound: boolean) => void, pathFound: boolean): void {
   // make array of open nodes with smallest index
   let minIndex = Infinity;
   let minToEnd = Infinity;
@@ -21,7 +21,7 @@ export default function aStarStep(field: Field): void {
   });
 
   if (foundMinIndexNodes.length === 0) {
-    // TODO stuck logic
+    callback(false);
     return;
   }
 
@@ -33,11 +33,12 @@ export default function aStarStep(field: Field): void {
     }
   });
 
-  // set the current node to closed
-  currentNode.makeClosed();
+  // set the current node to closed and remove it from openNodes
+  field.closeNode(currentNode);
 
   // if current one is the end, draw the path
   if (currentNode === field.endNode) {
+    callback(true);
     field.drawPath(currentNode);
     return;
   }
@@ -52,7 +53,7 @@ export default function aStarStep(field: Field): void {
       neighbourNode.state !== "wall" &&
       (neighbourNode.state !== "open" || neighbourNode.fromStart > newFromStart)
     ) {
-      neighbourNode.makeOpen(newFromStart);
+      field.openNode(neighbourNode, currentNode, newFromStart);
       neighbourNode.toEnd = Math.sqrt(
         (field.endNode.x - neighbourNode.x) ** 2 + (field.endNode.y - neighbourNode.y) ** 2
       );
@@ -60,7 +61,8 @@ export default function aStarStep(field: Field): void {
     }
   });
 
-  setTimeout(() => {
-    aStarStep(field);
-  }, 100);
+  // if this is redraw on move
+  if (pathFound) {
+    aStarStep(field, callback, pathFound);
+  }
 }

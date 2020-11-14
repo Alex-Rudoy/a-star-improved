@@ -19,11 +19,11 @@
       padding: 16px;
       position: relative;
 
-      & p {
+      p {
         font-size: 18px;
       }
 
-      & .arrow {
+      .arrow {
         box-sizing: initial;
         border-top: 12px solid white;
         border-right: 7px solid transparent;
@@ -33,6 +33,46 @@
 
       &:hover .header__dropdown {
         display: flex;
+      }
+    }
+
+    div.button {
+      background-color: #e7dec8;
+      color: #30475e;
+      padding: 8px 16px;
+      border-radius: 10px;
+      display: flex;
+      margin-right: 16px;
+      font-weight: 600;
+
+      &.hidden {
+        display: none;
+      }
+
+      .pause-first {
+        width: 3px;
+        height: 16px;
+        margin-right: 8px;
+        background-color: #30475e;
+      }
+
+      .pause-second {
+        width: 3px;
+        height: 16px;
+        background-color: #30475e;
+      }
+
+      .play {
+        box-sizing: initial;
+        border-left: 12px solid #30475e;
+        border-top: 8px solid transparent;
+        border-bottom: 8px solid transparent;
+      }
+
+      .stop {
+        width: 16px;
+        height: 16px;
+        background-color: #30475e;
       }
     }
   }

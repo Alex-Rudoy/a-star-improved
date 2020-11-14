@@ -1,7 +1,5 @@
 import Node from "./Node";
 
-type ClickTargets = "" | "makeWall" | "makeEmpty" | "start" | "end";
-
 export default class Field {
   nodes: Node[][];
   openNodes: Node[];
@@ -11,8 +9,7 @@ export default class Field {
   fieldWidth: number;
   fieldHeight: number;
 
-  mouseDown: boolean;
-  clickTarget: ClickTargets;
+  interval: NodeJS.Timeout;
 
   constructor() {
     this.nodes = [];
@@ -23,17 +20,9 @@ export default class Field {
     this.fieldWidth = 0;
     this.fieldHeight = 0;
 
-    this.mouseDown = false;
-    this.clickTarget = "";
+    this.interval = setInterval(() => {}, Infinity);
 
     this.setupMap();
-
-    // mouse click handlers
-    document.addEventListener("mousedown", (e) => (this.mouseDown = true));
-    document.addEventListener("mouseup", (e) => {
-      this.mouseUpHandler();
-    });
-    document.addEventListener("contextmenu", (e) => e.preventDefault());
   }
 
   setupMap() {
@@ -57,8 +46,6 @@ export default class Field {
         this.nodes[y].push(new Node({ x: x, y: y }));
         this.nodes[y][x].addDiv();
         field.insertAdjacentElement("beforeend", this.nodes[y][x].div);
-        this.nodes[y][x].div.addEventListener("mousedown", (e) => this.mouseDownHandler(e));
-        this.nodes[y][x].div.addEventListener("mouseenter", (e) => this.mouseMoveHandler(e));
       }
     }
 
@@ -77,85 +64,73 @@ export default class Field {
 
     // add start and end nodes
     this.startNode = this.nodes[Math.round(this.fieldHeight / 2)][Math.round(this.fieldWidth / 3)];
-    this.startNode.div.classList.add("node--start");
+    this.startNode.makeStart();
     this.endNode = this.nodes[Math.round(this.fieldHeight / 2)][Math.round((this.fieldWidth / 3) * 2)];
-    this.endNode.div.classList.add("node--end");
+    this.endNode.makeEnd();
 
     // big elements array
     this.nodes.push([]);
   }
 
-  mouseDownHandler(e: MouseEvent) {
-    e.preventDefault();
-    let div = <HTMLDivElement>e.target!;
+  softResetMap() {
+    console.log("soft reset");
+    this.openNodes = [];
 
-    if (div == this.startNode.div) {
-      this.clickTarget = "start";
-      return;
-    }
+    this.nodes.forEach((row) =>
+      row.forEach((node) => {
+        if (node.state === "closed" || node.state === "open" || node.state === "path") {
+          node.makeEmpty();
+        }
+      })
+    );
 
-    if (div == this.endNode.div) {
-      this.clickTarget = "end";
-      return;
-    }
-
-    // e.which is right mouse button
-    if (e.which == 3 || div.classList.contains("node--wall")) {
-      this.clickTarget = "makeEmpty";
-      this.nodes[+div.dataset.y!][+div.dataset.x!].makeEmpty();
-    } else {
-      this.clickTarget = "makeWall";
-      this.nodes[+div.dataset.y!][+div.dataset.x!].makeWall();
-    }
+    this.startNode.makeStart();
+    this.endNode.makeEnd();
   }
 
-  mouseUpHandler() {
-    this.mouseDown = false;
-    this.clickTarget = "";
-  }
+  hardResetMap() {
+    console.log("hard reset");
+    this.openNodes = [];
 
-  mouseMoveHandler(e: MouseEvent) {
-    e.preventDefault();
-    let div = <HTMLDivElement>e.target;
+    this.nodes.forEach((row) =>
+      row.forEach((node) => {
+        node.makeEmpty();
+      })
+    );
 
-    if (this.clickTarget == "start") {
-      this.moveStartNode(div);
-    }
-
-    if (this.clickTarget == "end") {
-      this.moveEndNode(div);
-    }
-
-    if (
-      this.clickTarget == "makeWall" &&
-      !div.classList.contains("node--start") &&
-      !div.classList.contains("node--end")
-    ) {
-      this.nodes[+div.dataset.y!][+div.dataset.x!].makeWall();
-    }
-
-    if (this.clickTarget == "makeEmpty") {
-      this.nodes[+div.dataset.y!][+div.dataset.x!].makeEmpty();
-    }
+    this.startNode = this.nodes[Math.round(this.fieldHeight / 2)][Math.round(this.fieldWidth / 3)];
+    this.startNode.makeStart();
+    this.endNode = this.nodes[Math.round(this.fieldHeight / 2)][Math.round((this.fieldWidth / 3) * 2)];
+    this.endNode.makeEnd();
   }
 
   moveStartNode(div: HTMLDivElement) {
     this.startNode.makeEmpty();
-    this.nodes[+div.dataset.y!][+div.dataset.x!].makeStart();
-    div.classList.add("node--start");
     this.startNode = this.nodes[+div.dataset.y!][+div.dataset.x!];
+    this.startNode.makeStart();
   }
 
   moveEndNode(div: HTMLDivElement) {
-    this.endNode.div.classList.remove("node--end");
-    div.classList.add("node--end");
+    this.endNode.makeEmpty();
     this.endNode = this.nodes[+div.dataset.y!][+div.dataset.x!];
+    this.endNode.makeEnd();
   }
 
   drawPath(node: Node) {
-    if (node !== this.startNode && node.parent) {
-      node.parent.makePath();
-      this.drawPath(node.parent);
+    if (node.parent !== this.startNode) {
+      node.parent!.makePath();
+      this.drawPath(node.parent!);
+      console.log("draw path");
     }
+  }
+
+  openNode(node: Node, parent: Node, fromStart: number) {
+    this.openNodes.push(node);
+    node.makeOpen(parent, fromStart);
+  }
+
+  closeNode(nodeToClose: Node) {
+    this.openNodes = this.openNodes.filter((node) => node !== nodeToClose);
+    nodeToClose.makeClosed();
   }
 }

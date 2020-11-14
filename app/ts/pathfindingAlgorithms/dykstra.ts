@@ -1,10 +1,9 @@
 import Field from "../Field";
 import Node from "../Node";
 
-export default function dykstraStep(field: Field): void {
+export default function dykstraStep(field: Field, callback: (pathFound: boolean) => void, pathFound: boolean): void {
   // make array of open nodes with smallest index
   let minIndex = Infinity;
-  let minToEnd = Infinity;
   let foundMinIndexNodes: Node[] = [];
   let currentNode: Node = new Node({ x: 0, y: 0 });
 
@@ -21,23 +20,18 @@ export default function dykstraStep(field: Field): void {
   });
 
   if (foundMinIndexNodes.length === 0) {
-    // TODO stuck logic
+    callback(false);
     return;
   }
 
-  // find node with smallest distance to the end in that array
-  foundMinIndexNodes.forEach((node) => {
-    if (node.toEnd < minToEnd) {
-      minToEnd = node.toEnd;
-      currentNode = node;
-    }
-  });
+  currentNode = foundMinIndexNodes[0];
 
-  // set the current node to closed
-  currentNode.makeClosed();
+  // set the current node to closed and remove it from openNodes
+  field.closeNode(currentNode);
 
   // if current one is the end, draw the path
   if (currentNode === field.endNode) {
+    callback(true);
     field.drawPath(currentNode);
     return;
   }
@@ -52,15 +46,13 @@ export default function dykstraStep(field: Field): void {
       neighbourNode.state !== "wall" &&
       (neighbourNode.state !== "open" || neighbourNode.fromStart > newFromStart)
     ) {
-      neighbourNode.makeOpen(newFromStart);
-      neighbourNode.toEnd = Math.sqrt(
-        (field.endNode.x - neighbourNode.x) ** 2 + (field.endNode.y - neighbourNode.y) ** 2
-      );
-      neighbourNode.index = neighbourNode.fromStart + neighbourNode.toEnd;
+      field.openNode(neighbourNode, currentNode, newFromStart);
+      neighbourNode.index = neighbourNode.fromStart;
     }
   });
 
-  setTimeout(() => {
-    dykstraStep(field);
-  }, 100);
+  // if this is redraw on move
+  if (pathFound) {
+    dykstraStep(field, callback, pathFound);
+  }
 }
