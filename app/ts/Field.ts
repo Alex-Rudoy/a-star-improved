@@ -73,7 +73,6 @@ export default class Field {
   }
 
   softResetMap() {
-    console.log("soft reset");
     this.openNodes = [];
 
     this.nodes.forEach((row) =>
@@ -89,7 +88,6 @@ export default class Field {
   }
 
   hardResetMap() {
-    console.log("hard reset");
     this.openNodes = [];
 
     this.nodes.forEach((row) =>
@@ -120,7 +118,6 @@ export default class Field {
     if (node.parent !== this.startNode) {
       node.parent!.makePath();
       this.drawPath(node.parent!);
-      console.log("draw path");
     }
   }
 

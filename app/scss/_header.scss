@@ -2,7 +2,7 @@
   width: 100vw;
 
   & h1 {
-    font-size: 28px;
+    font-size: 24px;
   }
 
   &__controls {
@@ -20,7 +20,7 @@
       position: relative;
 
       p {
-        font-size: 18px;
+        font-size: 16px;
       }
 
       .arrow {
@@ -43,36 +43,11 @@
       border-radius: 10px;
       display: flex;
       margin-right: 16px;
+      font-size: 16px;
       font-weight: 600;
 
       &.hidden {
         display: none;
-      }
-
-      .pause-first {
-        width: 3px;
-        height: 16px;
-        margin-right: 8px;
-        background-color: #30475e;
-      }
-
-      .pause-second {
-        width: 3px;
-        height: 16px;
-        background-color: #30475e;
-      }
-
-      .play {
-        box-sizing: initial;
-        border-left: 12px solid #30475e;
-        border-top: 8px solid transparent;
-        border-bottom: 8px solid transparent;
-      }
-
-      .stop {
-        width: 16px;
-        height: 16px;
-        background-color: #30475e;
       }
     }
   }
@@ -84,14 +59,14 @@
     width: max-content;
     z-index: 2;
     top: 70px;
-    left: 0;
+    right: 16px;
     padding: 8px;
     background-color: #30475e;
     border-radius: 5px;
 
     & p {
       padding: 8px;
-      font-size: 16px;
+      font-size: 14px;
 
       &:hover {
         color: #e7dec8;

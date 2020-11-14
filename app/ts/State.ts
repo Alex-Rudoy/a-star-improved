@@ -147,8 +147,7 @@ export default class State {
         break;
       case "runPathfinding":
         document.querySelector("#find")?.classList.add("hidden");
-        document.querySelector("#pause")?.classList.remove("hidden");
-        document.querySelector("#stop")?.classList.remove("hidden");
+        document.querySelector("#softReset")?.classList.remove("hidden");
         this.algorithmInProgress = true;
         this.field.openNode(this.field.startNode, new Node({ x: 0, y: 0 }), 0);
         this.interval = setInterval(
@@ -156,28 +155,20 @@ export default class State {
           4
         );
         break;
-      case "pausePathfinding":
-        document.querySelector("#pause")?.classList.add("hidden");
-        document.querySelector("#play")?.classList.remove("hidden");
-        clearInterval(this.interval);
-        break;
-      case "unpausePathfinding":
-        document.querySelector("#play")?.classList.add("hidden");
-        document.querySelector("#pause")?.classList.remove("hidden");
-        this.interval = setInterval(
-          () => this.pathfindingalgorithms[this.pathfindingalgorithm](this.field, this.pathFindingCallback, false),
-          4
-        );
-        break;
-      case "stopPathfinding":
-        console.log("stop is clicked");
+      case "softReset":
         document.querySelector("#find")?.classList.remove("hidden");
-        document.querySelector("#pause")?.classList.add("hidden");
-        document.querySelector("#play")?.classList.add("hidden");
-        document.querySelector("#stop")?.classList.add("hidden");
+        document.querySelector("#softReset")?.classList.add("hidden");
         this.algorithmInProgress = false;
         clearInterval(this.interval);
         this.field.softResetMap();
+        break;
+      case "hardReset":
+        document.querySelector("#find")?.classList.remove("hidden");
+        document.querySelector("#softReset")?.classList.add("hidden");
+        this.algorithmInProgress = false;
+        this.searchFinished = false;
+        clearInterval(this.interval);
+        this.field.hardResetMap();
         break;
       default:
         break;

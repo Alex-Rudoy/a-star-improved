@@ -23,24 +23,20 @@
             </div>
           </div>
           <div class="header__controls-item">
-            <div class="button" data-action="runPathfinding" id="find">Generate walls</div>
+            <div class="button" data-action="runPathfinding" id="generate">Generate walls</div>
           </div>
           <div class="header__controls-item">
             <p>Pathfinding algorithms</p>
             <div class="arrow"></div>
             <div class="header__dropdown">
               <p class="button" data-action="changePathfindingAlgorithm" data-mode="aStar">A*</p>
-              <p class="button" data-action="changePathfindingAlgorithm" data-mode="dykstra">Dykstra</p>
+              <p class="button" data-action="changePathfindingAlgorithm" data-mode="dijkstra">Dijkstra</p>
             </div>
           </div>
           <div class="header__controls-item">
             <div class="button" data-action="runPathfinding" id="find">Find path with A*</div>
-            <div class="button hidden" data-action="pausePathfinding" id="pause">
-              <div class="pause-first"></div>
-              <div class="pause-second"></div>
-            </div>
-            <div class="button hidden" data-action="unpausePathfinding" id="play"><div class="play"></div></div>
-            <div class="button hidden" data-action="stopPathfinding" id="stop"><div class="stop"></div></div>
+            <div class="button hidden" data-action="softReset" id="softReset">Reset</div>
+            <div class="button" data-action="hardReset" id="hardReset">Clean the board</div>
           </div>
         </div>
         <div class="header__legend">
