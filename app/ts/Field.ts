@@ -1,24 +1,28 @@
 import Node from "./Node";
 
-type ClickTargets = "addWall" | "removeWall" | "start" | "end";
+type ClickTargets = "" | "makeWall" | "makeEmpty" | "start" | "end";
 
 export default class Field {
   nodes: Node[][];
-  fieldWidth: number;
-  fieldHeight: number;
-  mouseDown: boolean;
   startNode: Node;
   endNode: Node;
+
+  fieldWidth: number;
+  fieldHeight: number;
+
+  mouseDown: boolean;
   clickTarget: ClickTargets;
 
   constructor() {
     this.nodes = [];
-    this.fieldWidth = 0;
-    this.fieldHeight = 0;
-    this.mouseDown = false;
     this.startNode = new Node({ x: 0, y: 0 });
     this.endNode = new Node({ x: 0, y: 0 });
-    this.clickTarget = "addWall";
+
+    this.fieldWidth = 0;
+    this.fieldHeight = 0;
+
+    this.mouseDown = false;
+    this.clickTarget = "";
 
     this.setupMap();
 
@@ -79,9 +83,9 @@ export default class Field {
     this.nodes.push([]);
   }
 
-  mouseDownHandler(e) {
+  mouseDownHandler(e: MouseEvent) {
     e.preventDefault();
-    let div = e.target;
+    let div = <HTMLDivElement>e.target!;
 
     if (div == this.startNode.div) {
       this.clickTarget = "start";
@@ -95,11 +99,11 @@ export default class Field {
 
     // e.which is right mouse button
     if (e.which == 3 || div.classList.contains("node--wall")) {
-      this.clickTarget = "removeWall";
-      this.nodes[div.dataset.y][div.dataset.x].removeWall();
+      this.clickTarget = "makeEmpty";
+      this.nodes[+div.dataset.y!][+div.dataset.x!].makeEmpty();
     } else {
-      this.clickTarget = "addWall";
-      this.nodes[div.dataset.y][div.dataset.x].makeWall();
+      this.clickTarget = "makeWall";
+      this.nodes[+div.dataset.y!][+div.dataset.x!].makeWall();
     }
   }
 
@@ -108,9 +112,9 @@ export default class Field {
     this.clickTarget = "";
   }
 
-  mouseMoveHandler(e) {
+  mouseMoveHandler(e: MouseEvent) {
     e.preventDefault();
-    let div = e.target;
+    let div = <HTMLDivElement>e.target;
 
     if (this.clickTarget == "start") {
       this.moveStartNode(div);
@@ -121,28 +125,28 @@ export default class Field {
     }
 
     if (
-      this.clickTarget == "addWall" &&
+      this.clickTarget == "makeWall" &&
       !div.classList.contains("node--start") &&
       !div.classList.contains("node--end")
     ) {
-      this.nodes[div.dataset.y][div.dataset.x].makeWall();
+      this.nodes[+div.dataset.y!][+div.dataset.x!].makeWall();
     }
 
-    if (this.clickTarget == "removeWall") {
-      this.nodes[div.dataset.y][div.dataset.x].removeWall();
+    if (this.clickTarget == "makeEmpty") {
+      this.nodes[+div.dataset.y!][+div.dataset.x!].makeEmpty();
     }
   }
 
-  moveStartNode(div) {
+  moveStartNode(div: HTMLDivElement) {
     this.startNode.makeEmpty();
-    this.nodes[div.dataset.y][div.dataset.x].makeStart();
+    this.nodes[+div.dataset.y!][+div.dataset.x!].makeStart();
     div.classList.add("node--start");
-    this.startNode = this.nodes[div.dataset.y][div.dataset.x];
+    this.startNode = this.nodes[+div.dataset.y!][+div.dataset.x!];
   }
 
-  moveEndNode(div) {
+  moveEndNode(div: HTMLDivElement) {
     this.endNode.div.classList.remove("node--end");
     div.classList.add("node--end");
-    this.endNode = this.nodes[div.dataset.y][div.dataset.x];
+    this.endNode = this.nodes[+div.dataset.y!][+div.dataset.x!];
   }
 }

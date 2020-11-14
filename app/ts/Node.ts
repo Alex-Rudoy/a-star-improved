@@ -1,5 +1,29 @@
+type NodeState = "empty" | "open" | "closed" | "wall" | "start" | "end";
+
 export default class Node {
-  constructor(args) {
+  x: number;
+  y: number;
+
+  width: number;
+  height: number;
+
+  xCoord: number;
+  yCoord: number;
+
+  state: NodeState;
+  neighbours: Node[];
+
+  div: HTMLDivElement;
+
+  addDiv = (): void => {};
+  addNeighbour = (a: Node): void => {};
+  removeNeighbour = (a: Node): void => {};
+  makeWall = (): void => {};
+  makeEmpty = (): void => {};
+  makeStart = (): void => {};
+  makeEnd = (): void => {};
+
+  constructor(args: { x: number; y: number; width?: number; height?: number }) {
     //positiom on grid
     this.x = args.x;
     this.y = args.y;
@@ -14,21 +38,20 @@ export default class Node {
     this.state = "empty";
     this.neighbours = [];
 
+    this.div = document.createElement("div");
     this.addDiv();
   }
 }
 
 Node.prototype.addDiv = function () {
-  this.div = document.createElement("div");
-
   this.div.classList.add("node");
   this.div.style.top = this.y * 25 + "px";
   this.div.style.left = this.x * 25 + "px";
   this.div.style.width = this.width * 25 + "px";
   this.div.style.height = this.height * 25 + "px";
 
-  this.div.dataset.x = this.x;
-  this.div.dataset.y = this.y;
+  this.div.dataset.x = this.x + "";
+  this.div.dataset.y = this.y + "";
 };
 
 Node.prototype.addNeighbour = function (a) {
@@ -36,7 +59,7 @@ Node.prototype.addNeighbour = function (a) {
 };
 
 Node.prototype.removeNeighbour = function (a) {
-  this.neighbours = this.neighbours.filter((n) => n != a);
+  this.neighbours = this.neighbours.filter((n: any) => n != a);
 };
 
 Node.prototype.makeWall = function () {
