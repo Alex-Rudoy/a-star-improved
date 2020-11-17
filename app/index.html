@@ -24,7 +24,16 @@
             </div>
           </div>
           <div class="header__controls-item">
-            <div class="button" data-action="runPathfinding" id="generate">Generate walls</div>
+            <p>Maze algorithms</p>
+            <div class="arrow"></div>
+            <div class="header__dropdown">
+              <p class="button" data-action="changeMazeBuildingAlgorithm" data-mode="recursiveDivision">
+                Recursive Division
+              </p>
+            </div>
+          </div>
+          <div class="header__controls-item">
+            <div class="button" data-action="runMazeBuilding" id="runMazeBuilding">Recursive Division</div>
           </div>
           <div class="header__controls-item">
             <p>Pathfinding algorithms</p>
@@ -36,7 +45,7 @@
             </div>
           </div>
           <div class="header__controls-item">
-            <div class="button" data-action="runPathfinding" id="find">Find path with A*</div>
+            <div class="button" data-action="runPathfinding" id="runPathfinding">Find path with A*</div>
             <div class="button hidden" data-action="softReset" id="softReset">Reset</div>
             <div class="button" data-action="hardReset" id="hardReset">Clean the board</div>
           </div>

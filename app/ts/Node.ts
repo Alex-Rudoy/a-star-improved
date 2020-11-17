@@ -69,8 +69,10 @@ export default class Node {
   }
 
   makeWall() {
-    this.state = "wall";
-    this.div.classList.add("node--wall");
+    if (this.state !== "start" && this.state !== "end") {
+      this.state = "wall";
+      this.div.classList.add("node--wall");
+    }
   }
 
   removeWall() {

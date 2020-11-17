@@ -1,4 +1,5 @@
 import Field from "./Field";
+import recursiveDivision from "./mazeAlgorithms/recursiveDivision";
 import Node from "./Node";
 import aStarStep from "./pathfindingAlgorithms/aStar";
 import dijkstraStep from "./pathfindingAlgorithms/dijkstra";
@@ -6,6 +7,7 @@ import weightedStep from "./pathfindingAlgorithms/weighted";
 
 type ObstacleMode = "wall" | "swamp" | "join";
 type PathfindingalgorithmName = "aStar" | "dijkstra" | "weighted";
+type MazeBuildingAlgorithmName = "recursiveDivision";
 type ClickTargets = "" | "makeWall" | "removeWall" | "makeSwamp" | "removeSwamp" | "start" | "end";
 
 export default class State {
@@ -19,6 +21,10 @@ export default class State {
   pathfindingalgorithms: {
     [name in PathfindingalgorithmName]: (field: Field, callback: () => void, searchFinished: boolean) => void;
   };
+  mazeBuildingAlgorithm: MazeBuildingAlgorithmName = "recursiveDivision";
+  mazeBuildingAlgorithms: {
+    [name in MazeBuildingAlgorithmName]: (field: Field, callback: () => void) => void;
+  };
 
   buttons: NodeListOf<Element>;
 
@@ -31,6 +37,7 @@ export default class State {
     this.field = new Field();
 
     this.pathfindingalgorithms = { aStar: aStarStep, dijkstra: dijkstraStep, weighted: weightedStep };
+    this.mazeBuildingAlgorithms = { recursiveDivision: recursiveDivision };
 
     this.buttons = document.querySelectorAll(".button");
     this.buttons.forEach((button) => button.addEventListener("click", (e) => this.buttonClickHandler(e)));
@@ -44,6 +51,7 @@ export default class State {
     this.NodeListeners();
 
     this.pathFindingCallback = this.pathFindingCallback.bind(this);
+    this.mazeBuildingCallback = this.mazeBuildingCallback.bind(this);
   }
 
   NodeListeners() {
@@ -130,9 +138,7 @@ export default class State {
           break;
 
         case "makeWall":
-          if (!div.classList.contains("node--start") && !div.classList.contains("node--end")) {
-            this.field.nodes[+div.dataset.y!][+div.dataset.x!].makeWall();
-          }
+          this.field.nodes[+div.dataset.y!][+div.dataset.x!].makeWall();
           break;
 
         case "removeWall":
@@ -161,29 +167,47 @@ export default class State {
           button.parentNode.parentNode.children[0].innerHTML = button.innerHTML;
         }
         break;
+
+      case "changeMazeBuildingAlgorithm":
+        this.mazeBuildingAlgorithm = <MazeBuildingAlgorithmName>button.dataset.mode;
+        document.querySelector("#runMazeBuilding")!.innerHTML = button.innerHTML;
+        break;
+
+      case "runMazeBuilding":
+        if (!this.algorithmInProgress) {
+          this.algorithmInProgress = true;
+          this.mazeBuildingAlgorithms[this.mazeBuildingAlgorithm](this.field, this.mazeBuildingCallback);
+        }
+        break;
+
       case "changePathfindingAlgorithm":
         this.pathfindingalgorithm = <PathfindingalgorithmName>button.dataset.mode;
-        document.querySelector("#find")!.innerHTML = `Find path with ${button.innerHTML}`;
+        document.querySelector("#runPathfinding")!.innerHTML = `Find path with ${button.innerHTML}`;
         break;
+
       case "runPathfinding":
-        document.querySelector("#find")?.classList.add("hidden");
-        document.querySelector("#softReset")?.classList.remove("hidden");
-        this.algorithmInProgress = true;
-        this.field.openNode(this.field.startNode, new Node({ x: 0, y: 0 }), 0);
-        this.interval = setInterval(
-          () => this.pathfindingalgorithms[this.pathfindingalgorithm](this.field, this.pathFindingCallback, false),
-          4
-        );
+        if (!this.algorithmInProgress) {
+          document.querySelector("#runPathfinding")?.classList.add("hidden");
+          document.querySelector("#softReset")?.classList.remove("hidden");
+          this.algorithmInProgress = true;
+          this.field.openNode(this.field.startNode, new Node({ x: 0, y: 0 }), 0);
+          this.interval = setInterval(
+            () => this.pathfindingalgorithms[this.pathfindingalgorithm](this.field, this.pathFindingCallback, false),
+            4
+          );
+        }
         break;
+
       case "softReset":
-        document.querySelector("#find")?.classList.remove("hidden");
+        document.querySelector("#runPathfinding")?.classList.remove("hidden");
         document.querySelector("#softReset")?.classList.add("hidden");
         this.algorithmInProgress = false;
         clearInterval(this.interval);
         this.field.softResetMap();
         break;
+
       case "hardReset":
-        document.querySelector("#find")?.classList.remove("hidden");
+        document.querySelector("#runPathfinding")?.classList.remove("hidden");
         document.querySelector("#softReset")?.classList.add("hidden");
         this.algorithmInProgress = false;
         this.searchFinished = false;
@@ -201,5 +225,9 @@ export default class State {
     clearInterval(this.interval);
     this.algorithmInProgress = false;
     this.searchFinished = true;
+  }
+
+  mazeBuildingCallback(): void {
+    this.algorithmInProgress = false;
   }
 }
