@@ -2,9 +2,10 @@ import Field from "./Field";
 import Node from "./Node";
 import aStarStep from "./pathfindingAlgorithms/aStar";
 import dijkstraStep from "./pathfindingAlgorithms/dijkstra";
+import weightedStep from "./pathfindingAlgorithms/weighted";
 
 type ObstacleMode = "wall" | "swamp" | "join";
-type PathfindingalgorithmName = "aStar" | "dijkstra";
+type PathfindingalgorithmName = "aStar" | "dijkstra" | "weighted";
 type ClickTargets = "" | "makeWall" | "removeWall" | "makeSwamp" | "removeSwamp" | "start" | "end";
 
 export default class State {
@@ -29,7 +30,7 @@ export default class State {
   constructor() {
     this.field = new Field();
 
-    this.pathfindingalgorithms = { aStar: aStarStep, dijkstra: dijkstraStep };
+    this.pathfindingalgorithms = { aStar: aStarStep, dijkstra: dijkstraStep, weighted: weightedStep };
 
     this.buttons = document.querySelectorAll(".button");
     this.buttons.forEach((button) => button.addEventListener("click", (e) => this.buttonClickHandler(e)));
