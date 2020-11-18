@@ -23,6 +23,7 @@ export default function addButtonHandlers(state: State) {
 
       case "runMazeBuilding":
         if (!state.algorithmInProgress) {
+          state.field.hardResetMap();
           state.algorithmInProgress = true;
           state.mazeBuildingAlgorithms[state.mazeBuildingAlgorithm](state.field, state.mazeBuildingCallback);
         }
@@ -31,6 +32,11 @@ export default function addButtonHandlers(state: State) {
       case "changePathfindingAlgorithm":
         state.pathfindingalgorithm = <PathfindingAlgorithmName>button.dataset.mode;
         document.querySelector("#runPathfinding")!.innerHTML = `Find path with ${button.innerHTML}`;
+        if (state.searchFinished) {
+          state.field.softResetMap();
+          state.field.openNode(state.field.startNode, new Node({ x: 0, y: 0 }), 0);
+          state.pathfindingalgorithms[state.pathfindingalgorithm](state.field, state.pathFindingCallback, true);
+        }
         break;
 
       case "runPathfinding":
