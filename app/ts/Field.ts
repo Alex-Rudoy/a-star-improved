@@ -1,31 +1,17 @@
 import Node from "./Node";
 
 export default class Field {
-  nodes: Node[][];
-  openNodes: Node[];
-  startNode: Node;
-  endNode: Node;
+  nodes: Node[][] = [];
+  openNodes: Node[] = [];
+  startNode: Node = new Node({ x: 0, y: 0 });
+  endNode: Node = new Node({ x: 0, y: 0 });
 
-  fieldWidth: number;
-  fieldHeight: number;
+  fieldWidth: number = 0;
+  fieldHeight: number = 0;
 
-  interval: NodeJS.Timeout;
+  interval: NodeJS.Timeout = setInterval(() => {}, Infinity);
 
   constructor() {
-    this.nodes = [];
-    this.openNodes = [];
-    this.startNode = new Node({ x: 0, y: 0 });
-    this.endNode = new Node({ x: 0, y: 0 });
-
-    this.fieldWidth = 0;
-    this.fieldHeight = 0;
-
-    this.interval = setInterval(() => {}, Infinity);
-
-    this.setupMap();
-  }
-
-  setupMap() {
     // field size based on screen size
     let field = <HTMLElement>document.querySelector(".field")!;
     let header = document.querySelector("header")!;

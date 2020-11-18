@@ -1,82 +1,20 @@
 import Field from "../Field";
-import Node from "../Node";
+import callbackChecks from "./utils/callbackChecks";
+import chooseNextNode from "./utils/chooseNextNode";
+import openNeighbours from "./utils/openNeighbours";
 
 export default function weightedStep(field: Field, callback: () => void, quickRedraw: boolean): void {
-  const currentNode = weightedChooseNextNode(field);
+  const currentNode = chooseNextNode(field, "weighted");
 
-  // if there are no way to get to end, stop
-  if (!currentNode) {
-    callback();
-    return;
-  }
-
-  // if current one is the end, draw the path
-  if (currentNode === field.endNode) {
-    callback();
-    field.drawPath(currentNode);
-    return;
-  }
+  if (callbackChecks(field, currentNode, callback)) return;
 
   // set the current node to closed and remove it from openNodes
-  field.closeNode(currentNode);
+  field.closeNode(currentNode!);
 
-  weightedOpenNeighbours(field, currentNode);
+  openNeighbours(field, currentNode!, "weighted");
 
   // if this is redraw on move
   if (quickRedraw) {
     weightedStep(field, callback, quickRedraw);
   }
-}
-
-function weightedChooseNextNode(field: Field): Node | null {
-  let minIndex = Infinity;
-  let minToEnd = Infinity;
-  let foundMinIndexNodes: Node[] = [];
-  let currentNode: Node = new Node({ x: 0, y: 0 });
-
-  field.openNodes.forEach((node) => {
-    if (node.index <= minIndex) {
-      minIndex = node.index;
-    }
-  });
-
-  field.openNodes.forEach((node) => {
-    if (node.index <= minIndex) {
-      foundMinIndexNodes.push(node);
-    }
-  });
-
-  if (foundMinIndexNodes.length === 0) {
-    return null;
-  }
-
-  // find node with smallest distance to the end in that array
-  foundMinIndexNodes.forEach((node) => {
-    if (node.toEnd < minToEnd) {
-      minToEnd = node.toEnd;
-      currentNode = node;
-    }
-  });
-
-  return currentNode;
-}
-
-function weightedOpenNeighbours(field: Field, currentNode: Node): void {
-  currentNode.neighbours.forEach((neighbourNode) => {
-    const newFromStart =
-      currentNode.fromStart +
-      Math.sqrt((currentNode.x - neighbourNode.x) ** 2 + (currentNode.y - neighbourNode.y) ** 2) *
-        (1 + 1 * +neighbourNode.isSwamp);
-    if (
-      neighbourNode.state !== "closed" &&
-      neighbourNode.state !== "wall" &&
-      (neighbourNode.state !== "open" || neighbourNode.fromStart > newFromStart)
-    ) {
-      field.openNode(neighbourNode, currentNode, newFromStart);
-      neighbourNode.toEnd = Math.sqrt(
-        (field.endNode.x - neighbourNode.x) ** 2 + (field.endNode.y - neighbourNode.y) ** 2
-      );
-      neighbourNode.index = neighbourNode.fromStart*2 + neighbourNode.toEnd;
-    }
-  });
 }

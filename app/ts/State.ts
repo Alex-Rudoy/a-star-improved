@@ -4,11 +4,14 @@ import Node from "./Node";
 import aStarStep from "./pathfindingAlgorithms/aStar";
 import dijkstraStep from "./pathfindingAlgorithms/dijkstra";
 import weightedStep from "./pathfindingAlgorithms/weighted";
-
-type ObstacleMode = "wall" | "swamp" | "join";
-type PathfindingalgorithmName = "aStar" | "dijkstra" | "weighted";
-type MazeBuildingAlgorithmName = "recursiveDivision";
-type ClickTargets = "" | "makeWall" | "removeWall" | "makeSwamp" | "removeSwamp" | "start" | "end";
+import {
+  ClickTargets,
+  MazeBuildingAlgorithmName,
+  MazeBuildingAlgorithms,
+  ObstacleMode,
+  PathfindingAlgorithmName,
+  PathfindingAlgorithms,
+} from "./types";
 
 export default class State {
   field: Field;
@@ -17,14 +20,10 @@ export default class State {
   searchFinished: boolean = false;
 
   obstacleMode: ObstacleMode = "wall";
-  pathfindingalgorithm: PathfindingalgorithmName = "aStar";
-  pathfindingalgorithms: {
-    [name in PathfindingalgorithmName]: (field: Field, callback: () => void, searchFinished: boolean) => void;
-  };
+  pathfindingalgorithm: PathfindingAlgorithmName = "aStar";
+  pathfindingalgorithms: PathfindingAlgorithms;
   mazeBuildingAlgorithm: MazeBuildingAlgorithmName = "recursiveDivision";
-  mazeBuildingAlgorithms: {
-    [name in MazeBuildingAlgorithmName]: (field: Field, callback: () => void) => void;
-  };
+  mazeBuildingAlgorithms: MazeBuildingAlgorithms;
 
   buttons: NodeListOf<Element>;
 
@@ -181,7 +180,7 @@ export default class State {
         break;
 
       case "changePathfindingAlgorithm":
-        this.pathfindingalgorithm = <PathfindingalgorithmName>button.dataset.mode;
+        this.pathfindingalgorithm = <PathfindingAlgorithmName>button.dataset.mode;
         document.querySelector("#runPathfinding")!.innerHTML = `Find path with ${button.innerHTML}`;
         break;
 

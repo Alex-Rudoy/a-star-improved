@@ -1,4 +1,4 @@
-type NodeState = "empty" | "open" | "closed" | "path" | "wall" | "start" | "end";
+import { NodeState } from "./types";
 
 export default class Node {
   x: number;
@@ -10,15 +10,15 @@ export default class Node {
   xCoord: number;
   yCoord: number;
 
-  fromStart: number;
-  toEnd: number;
-  index: number;
+  fromStart: number = 0;
+  toEnd: number = 0;
+  index: number = 0;
 
-  state: NodeState;
-  isSwamp: boolean;
+  state: NodeState = "empty";
+  isSwamp: boolean = false;
 
-  neighbours: Node[];
-  parent: Node | null;
+  neighbours: Node[] = [];
+  parent: Node | null = null;
 
   div: HTMLDivElement;
 
@@ -33,17 +33,6 @@ export default class Node {
     // position of center of node for distance calculations
     this.xCoord = this.x + this.width / 2;
     this.yCoord = this.y + this.height / 2;
-
-    // distances for algorithms
-    this.fromStart = 0;
-    this.toEnd = 0;
-    this.index = 0;
-
-    this.state = "empty";
-    this.isSwamp = false;
-
-    this.neighbours = [];
-    this.parent = null;
 
     this.div = document.createElement("div");
     this.addDiv();
