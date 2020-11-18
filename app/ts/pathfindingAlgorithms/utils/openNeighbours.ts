@@ -1,5 +1,5 @@
-import Field from "../../Field";
-import Node from "../../Node";
+import Field from "../../classes/Field";
+import Node from "../../classes/Node";
 import { PathfindingAlgorithmName } from "../../types";
 
 export default function openNeighbours(field: Field, currentNode: Node, algorithm: PathfindingAlgorithmName): void {

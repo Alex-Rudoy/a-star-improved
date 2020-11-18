@@ -1,4 +1,4 @@
-import Field from "../Field";
+import Field from "../classes/Field";
 import callbackChecks from "./utils/callbackChecks";
 import chooseNextNode from "./utils/chooseNextNode";
 import openNeighbours from "./utils/openNeighbours";

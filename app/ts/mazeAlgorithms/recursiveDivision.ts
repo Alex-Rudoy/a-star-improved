@@ -1,5 +1,5 @@
-import Field from "../Field";
-import Node from "../Node";
+import Field from "../classes/Field";
+import Node from "../classes/Node";
 
 // add chamber type
 class Chamber {

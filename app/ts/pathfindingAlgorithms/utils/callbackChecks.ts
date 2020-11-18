@@ -1,5 +1,5 @@
-import Field from "../../Field";
-import Node from "../../Node";
+import Field from "../../classes/Field";
+import Node from "../../classes/Node";
 
 export default function callbackChecks(field: Field, currentNode: Node | null, callback: () => void) {
   // if there are no way to get to end, stop

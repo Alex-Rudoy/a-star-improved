@@ -1,4 +1,4 @@
-import Field from "./Field";
+import Field from "./classes/Field";
 
 export type ObstacleMode = "wall" | "swamp" | "join";
 

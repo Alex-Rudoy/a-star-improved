@@ -1,4 +1,4 @@
-import { NodeState } from "./types";
+import { NodeState } from "../types";
 
 export default class Node {
   x: number;
@@ -20,7 +20,7 @@ export default class Node {
   neighbours: Node[] = [];
   parent: Node | null = null;
 
-  div: HTMLDivElement;
+  div: HTMLDivElement = document.createElement("div");
 
   constructor(args: { x: number; y: number; width?: number; height?: number }) {
     //positiom on grid
@@ -34,7 +34,6 @@ export default class Node {
     this.xCoord = this.x + this.width / 2;
     this.yCoord = this.y + this.height / 2;
 
-    this.div = document.createElement("div");
     this.addDiv();
   }
 
