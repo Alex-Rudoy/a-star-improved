@@ -30,7 +30,6 @@ export default class Field {
 
       for (let x = 0; x < this.fieldWidth; x++) {
         this.nodes[y].push(new Node({ x: x, y: y }));
-        this.nodes[y][x].addDiv();
         field.insertAdjacentElement("beforeend", this.nodes[y][x].div);
       }
     }
@@ -40,8 +39,14 @@ export default class Field {
       for (let x = 0; x < this.fieldWidth; x++) {
         for (let i = -1; i <= 1; i++) {
           for (let j = -1; j <= 1; j++) {
-            if (x + j >= 0 && y + i >= 0 && x + j < this.fieldWidth && y + i < this.fieldHeight) {
-              this.nodes[y][x].addNeighbour(this.nodes[y + i][x + j]);
+            if (
+              x + j >= 0 &&
+              y + i >= 0 &&
+              x + j < this.fieldWidth &&
+              y + i < this.fieldHeight &&
+              !(j === 0 && i === 0)
+            ) {
+              this.nodes[y][x].addNeighbour(j === 0 || i === 0, this.nodes[y + i][x + j]);
             }
           }
         }

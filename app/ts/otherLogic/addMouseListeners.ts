@@ -80,11 +80,7 @@ export default function addMouseListeners(state: State) {
           if (state.searchFinished) {
             state.field.softResetMap();
             state.field.openNode(state.field.startNode, new Node({ x: 0, y: 0 }), 0);
-            state.pathfindingalgorithms[state.pathfindingalgorithm](
-              state.field,
-              state.pathFindingCallback,
-              state.searchFinished
-            );
+            state.pathfindingalgorithms[state.pathfindingalgorithm](state.field, state.pathFindingCallback, true);
           }
           break;
 

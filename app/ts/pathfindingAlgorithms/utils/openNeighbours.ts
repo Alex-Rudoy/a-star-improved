@@ -3,7 +3,8 @@ import Node from "../../classes/Node";
 import { PathfindingAlgorithmName } from "../../types";
 
 export default function openNeighbours(field: Field, currentNode: Node, algorithm: PathfindingAlgorithmName): void {
-  currentNode.neighbours.forEach((neighbourNode) => {
+  currentNode.neighbours.forEach((neighbour) => {
+    const neighbourNode = neighbour.node;
     // calculate new path distance from start
     // current node + distance between current and neighbour calculated with Pythagorean theorem
     // if neighbour is swamp, distance x2

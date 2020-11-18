@@ -17,10 +17,10 @@ export default class Node {
   state: NodeState = "empty";
   isSwamp: boolean = false;
 
-  neighbours: Node[] = [];
+  neighbours: { straight: boolean; node: Node }[] = [];
   parent: Node | null = null;
 
-  div: HTMLDivElement = document.createElement("div");
+  div: HTMLDivElement;
 
   constructor(args: { x: number; y: number; width?: number; height?: number }) {
     //positiom on grid
@@ -34,10 +34,7 @@ export default class Node {
     this.xCoord = this.x + this.width / 2;
     this.yCoord = this.y + this.height / 2;
 
-    this.addDiv();
-  }
-
-  addDiv() {
+    this.div = document.createElement("div");
     this.div.classList.add("node");
     this.div.style.top = this.y * 25 + "px";
     this.div.style.left = this.x * 25 + "px";
@@ -48,12 +45,12 @@ export default class Node {
     this.div.dataset.y = this.y + "";
   }
 
-  addNeighbour(a: Node) {
-    this.neighbours.push(a);
+  addNeighbour(straight: boolean, node: Node) {
+    this.neighbours.push({ straight, node });
   }
 
-  removeNeighbour(a: Node) {
-    this.neighbours = this.neighbours.filter((n: any) => n != a);
+  removeNeighbour(node: Node) {
+    this.neighbours = this.neighbours.filter((neighbour) => neighbour.node != node);
   }
 
   makeWall() {
